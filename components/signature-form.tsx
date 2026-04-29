@@ -83,6 +83,19 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           {labels.language}
         </legend>
         <div className="flex flex-col gap-3 sm:flex-row">
+        <button
+            type="button"
+            onClick={() => handleLanguageChange('el')}
+            aria-pressed={formData.language === 'el'}
+            className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all ${
+              formData.language === 'el'
+                ? 'text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+            style={formData.language === 'el' ? { backgroundColor: '#0000FF' } : {}}
+          >
+            {labels.greek}
+          </button>
           <button
             type="button"
             onClick={() => handleLanguageChange('en')}
@@ -96,19 +109,7 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           >
             {labels.english}
           </button>
-          <button
-            type="button"
-            onClick={() => handleLanguageChange('el')}
-            aria-pressed={formData.language === 'el'}
-            className={`flex-1 py-2.5 px-4 rounded-lg font-medium transition-all ${
-              formData.language === 'el'
-                ? 'text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-            style={formData.language === 'el' ? { backgroundColor: '#0000FF' } : {}}
-          >
-            {labels.greek}
-          </button>
+          
         </div>
       </fieldset>
 
@@ -163,10 +164,10 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           id="email"
           name="email"
           type="email"
-          placeholder="name@elkak.gr"
+          placeholder="NAME@ELKAK.GR"
           value={formData.email}
-          onChange={(e) => handleInputChange('email', e.target.value)}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+          onChange={(e) => handleInputChange('email', e.target.value.toUpperCase())}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent uppercase"
           style={{ '--tw-ring-color': '#0000FF' } as React.CSSProperties}
           autoComplete="email"
           required
