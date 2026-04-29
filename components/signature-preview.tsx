@@ -44,6 +44,7 @@ const companyData = {
 export default function SignaturePreview({ formData }: SignaturePreviewProps) {
   const signatureRef = useRef<HTMLDivElement>(null);
   const company = companyData[formData.language];
+  const isElkakEmail = (value: string) => /^[A-Z0-9._%+-]+@ELKAK\.GR$/i.test(value.trim());
 
   const handleDownload = async () => {
     if (signatureRef.current) {
@@ -82,43 +83,98 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
     if (signatureRef.current) {
       try {
         const origin = window.location.origin;
-        const container = document.createElement('div');
-        container.setAttribute('style', 'font-family: Arial, sans-serif; max-width: 700px;');
+        const blue = '#0000FF';
+        const safe = (s: string) =>
+          s
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
 
-        // Clone the signature content so we can post-process it for email client compatibility.
-        const clone = signatureRef.current.cloneNode(true) as HTMLDivElement;
-        clone.removeAttribute('class');
-        clone.removeAttribute('style');
+        const topLogoSrc = `${origin}${logos.topLogo}`;
+        const bottomLogoSrc = `${origin}${logos.bottomLogo[formData.language]}`;
 
-        // Ensure image URLs are absolute and enforce logo sizing via both attributes and inline CSS.
-        // Some email editors strip/ignore CSS on paste; attributes (height/width) are more consistently honored.
-        const imgs = Array.from(clone.querySelectorAll('img'));
-        for (const img of imgs) {
-          const src = img.getAttribute('src') || '';
-          if (src.startsWith('/')) img.setAttribute('src', `${origin}${src}`);
+        const email = formData.email?.trim();
+        const showEmail = !!email && isElkakEmail(email);
+        const tel = formData.phone?.trim();
+        const mob = formData.mobile?.trim();
+        const telLabel = formData.language === 'en' ? 'T:' : 'Τ:';
+        const mobLabel = formData.language === 'en' ? 'M:' : 'Κ:';
+        const telValue = formData.language === 'en' && tel ? `+30 ${tel}` : tel;
+        const mobValue = formData.language === 'en' && mob ? `+30 ${mob}` : mob;
 
-          const isTopLogo = src.includes('elkak-logo-top');
-          const isBottomLogo = src.includes('elkak-logo-bottom');
-
-          if (isTopLogo) {
-            img.setAttribute('height', '70');
-            img.style.height = '70px';
-            img.style.maxHeight = '70px';
-            img.style.width = 'auto';
-            img.style.display = 'block';
-          }
-
-          if (isBottomLogo) {
-            img.setAttribute('height', '42');
-            img.style.height = '42px';
-            img.style.maxHeight = '42px';
-            img.style.width = 'auto';
-            img.style.display = 'block';
-          }
-        }
-
-        container.appendChild(clone);
-        const htmlForClipboard = container.outerHTML;
+        // Email-signature-friendly markup: tables + redundant font/color styles.
+        const htmlForClipboard = `
+<table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; color: ${blue}; max-width: 700px;">
+  <tr>
+    <td style="padding: 0 0 12px 0;">
+      <img src="${topLogoSrc}" alt="ELKAK" height="70" style="height:70px; max-height:70px; width:auto; display:block; object-fit:contain;" />
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 0; margin:0;">
+      <div style="margin:0; padding:0;">
+        <div style="margin:0; padding:0; font-size:14px; font-weight:700; line-height:1.15; color:${blue};">
+          <font face="Arial" color="${blue}">${safe(formData.fullName || '')}</font>
+        </div>
+        <div style="margin:0; padding:0; font-size:12px; line-height:1.15; color:${blue};">
+          <font face="Arial" color="${blue}">${safe(formData.position || '')}</font>
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 6px 0 6px 0;">
+      <div style="border-top: 1px solid ${blue}; font-size:0; line-height:0;">&nbsp;</div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0; margin:0;">
+      <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; color:${blue};">
+        ${showEmail ? `
+        <tr>
+          <td style="padding:0; margin:0; font-size:11px; line-height:1.15; color:${blue};">
+            <font face="Arial" color="${blue}">
+              <a href="mailto:${safe(email!)}" style="color:${blue}; text-decoration:none;">
+                ${safe(email!)}
+              </a>
+            </font>
+          </td>
+        </tr>` : ''}
+        ${(telValue || mobValue) ? `
+        <tr>
+          <td style="padding:0; margin:0; font-size:11px; line-height:1.15; color:${blue};">
+            <font face="Arial" color="${blue}">
+              ${telValue ? `${safe(telLabel)}&nbsp;${safe(telValue)}` : ''}
+              ${telValue && mobValue ? '&nbsp;&nbsp;&nbsp;&nbsp;' : ''}
+              ${mobValue ? `${safe(mobLabel)}&nbsp;${safe(mobValue)}` : ''}
+            </font>
+          </td>
+        </tr>` : ''}
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0; margin:0; font-size:11px; line-height:1.15; color:${blue};">
+      <font face="Arial" color="${blue}">${safe(company.address)}</font>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0; margin:0; font-size:11px; line-height:1.15; color:${blue};">
+      <font face="Arial" color="${blue}">
+        <a href="https://${safe(company.website)}" style="color:${blue}; text-decoration:none;" target="_blank" rel="noopener noreferrer">
+          ${safe(company.website)}
+        </a>
+      </font>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 12px 0 0 0;">
+      <img src="${bottomLogoSrc}" alt="ELKAK" height="42" style="height:42px; max-height:42px; width:auto; display:block; object-fit:contain;" />
+    </td>
+  </tr>
+</table>`.trim();
 
         // Write both HTML and plain text to the clipboard.
         // Using `writeText()` only provides text/plain, which some editors paste as raw HTML text.
@@ -217,7 +273,7 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
 
         {/* Contact Info */}
         <div style={{ fontSize: '11px', color: '#0000FF', lineHeight: '1.5' }}>
-          {formData.email && (
+          {formData.email && isElkakEmail(formData.email) && (
             <div style={{ margin: '0px' }}>
               <a href={`mailto:${formData.email}`} style={{ color: '#0000FF', textDecoration: 'none' }}>
                 {formData.email}
@@ -229,13 +285,13 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
               {formData.phone && (
                 <span>
                   <span>{formData.language === 'en' ? 'T: ' : 'Τ: '}</span>
-                  {formData.phone}
+                  {formData.language === 'en' ? `+30 ${formData.phone}` : formData.phone}
                 </span>
               )}
               {formData.mobile && (
                 <span>
                   <span>{formData.language === 'en' ? 'M: ' : 'Κ: '}</span>
-                  {formData.mobile}
+                  {formData.language === 'en' ? `+30 ${formData.mobile}` : formData.mobile}
                 </span>
               )}
             </div>

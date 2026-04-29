@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 interface FormData {
   language: 'en' | 'el';
   fullName: string;
@@ -48,6 +50,11 @@ const languageLabels = {
 
 export default function SignatureForm({ formData, setFormData }: SignatureFormProps) {
   const labels = languageLabels[formData.language];
+  const [emailTouched, setEmailTouched] = useState(false);
+
+  const sanitizeTenDigitNumber = (value: string) => value.replace(/\D/g, '').slice(0, 10);
+  const isElkakEmail = (value: string) => /^[A-Z0-9._%+-]+@ELKAK\.GR$/.test(value);
+  const showEmailError = emailTouched && formData.email.length > 0 && !isElkakEmail(formData.email);
 
   const handleLanguageChange = (lang: 'en' | 'el') => {
     setFormData({
@@ -166,12 +173,39 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           type="email"
           placeholder="NAME@ELKAK.GR"
           value={formData.email}
-          onChange={(e) => handleInputChange('email', e.target.value.toUpperCase())}
-          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent uppercase"
+          onChange={(e) => {
+            const value = e.target.value.toUpperCase();
+            const valid =
+              value.length === 0 || /^[A-Z0-9._%+-]+@ELKAK\.GR$/.test(value);
+            e.target.setCustomValidity(
+              valid
+                ? ''
+                : formData.language === 'en'
+                  ? 'Only @elkak.gr emails are allowed.'
+                  : 'Επιτρέπονται μόνο emails @elkak.gr.'
+            );
+            handleInputChange('email', value);
+          }}
+          onBlur={(e) => {
+            setEmailTouched(true);
+          }}
+          aria-invalid={showEmailError}
+          className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent uppercase ${
+            showEmailError ? 'border-red-500' : 'border-gray-300'
+          }`}
           style={{ '--tw-ring-color': '#0000FF' } as React.CSSProperties}
           autoComplete="email"
+          pattern="^[A-Z0-9._%+-]+@ELKAK\\.GR$"
+          title={formData.language === 'en' ? 'Only @elkak.gr emails are allowed.' : 'Επιτρέπονται μόνο emails @elkak.gr.'}
           required
         />
+        {showEmailError && (
+          <p className="mt-1 text-xs text-red-600">
+            {formData.language === 'en'
+              ? 'Only @elkak.gr emails are allowed.'
+              : 'Επιτρέπονται μόνο emails @elkak.gr.'}
+          </p>
+        )}
       </div>
 
       {/* Phone */}
@@ -185,9 +219,13 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           type="tel"
           placeholder="210 XXX XXXX"
           value={formData.phone}
-          onChange={(e) => handleInputChange('phone', e.target.value)}
+          onChange={(e) => handleInputChange('phone', sanitizeTenDigitNumber(e.target.value))}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
           style={{ '--tw-ring-color': '#0000FF' } as React.CSSProperties}
+          inputMode="numeric"
+          pattern="^\\d{10}$"
+          maxLength={10}
+          title={formData.language === 'en' ? 'Telephone must be exactly 10 digits.' : 'Το τηλέφωνο πρέπει να είναι ακριβώς 10 ψηφία.'}
           autoComplete="tel"
           required
         />
@@ -204,9 +242,13 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           type="tel"
           placeholder="69X XXX XXXX"
           value={formData.mobile}
-          onChange={(e) => handleInputChange('mobile', e.target.value)}
+          onChange={(e) => handleInputChange('mobile', sanitizeTenDigitNumber(e.target.value))}
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
           style={{ '--tw-ring-color': '#0000FF' } as React.CSSProperties}
+          inputMode="numeric"
+          pattern="^\\d{10}$"
+          maxLength={10}
+          title={formData.language === 'en' ? 'Mobile must be exactly 10 digits.' : 'Το κινητό πρέπει να είναι ακριβώς 10 ψηφία.'}
           autoComplete="tel-national"
         />
       </div>
