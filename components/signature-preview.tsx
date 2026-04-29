@@ -81,30 +81,61 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
   const handleCopySignature = async () => {
     if (signatureRef.current) {
       try {
-        // Copy only the signature contents (avoid Tailwind container classes like padding/border
-        // which email signature editors may not apply).
-        const innerHtml = signatureRef.current.innerHTML;
         const origin = window.location.origin;
-        const htmlFragment = `<div style="font-family: Arial, sans-serif; max-width: 700px;">${innerHtml}</div>`;
-        // Ensure image URLs resolve outside this page (Outlook signature editors won't resolve "/path" reliably).
-        const htmlWithAbsoluteImageSrc = htmlFragment.replace(/src="\/([^"]+)"/g, `src="${origin}/$1"`);
+        const container = document.createElement('div');
+        container.setAttribute('style', 'font-family: Arial, sans-serif; max-width: 700px;');
+
+        // Clone the signature content so we can post-process it for email client compatibility.
+        const clone = signatureRef.current.cloneNode(true) as HTMLDivElement;
+        clone.removeAttribute('class');
+        clone.removeAttribute('style');
+
+        // Ensure image URLs are absolute and enforce logo sizing via both attributes and inline CSS.
+        // Some email editors strip/ignore CSS on paste; attributes (height/width) are more consistently honored.
+        const imgs = Array.from(clone.querySelectorAll('img'));
+        for (const img of imgs) {
+          const src = img.getAttribute('src') || '';
+          if (src.startsWith('/')) img.setAttribute('src', `${origin}${src}`);
+
+          const isTopLogo = src.includes('elkak-logo-top');
+          const isBottomLogo = src.includes('elkak-logo-bottom');
+
+          if (isTopLogo) {
+            img.setAttribute('height', '70');
+            img.style.height = '70px';
+            img.style.maxHeight = '70px';
+            img.style.width = 'auto';
+            img.style.display = 'block';
+          }
+
+          if (isBottomLogo) {
+            img.setAttribute('height', '42');
+            img.style.height = '42px';
+            img.style.maxHeight = '42px';
+            img.style.width = 'auto';
+            img.style.display = 'block';
+          }
+        }
+
+        container.appendChild(clone);
+        const htmlForClipboard = container.outerHTML;
 
         // Write both HTML and plain text to the clipboard.
         // Using `writeText()` only provides text/plain, which some editors paste as raw HTML text.
         const plainText =
           signatureRef.current.innerText?.trim() ||
-          htmlWithAbsoluteImageSrc.replace(/<[^>]*>/g, ' ');
+          htmlForClipboard.replace(/<[^>]*>/g, ' ');
 
         const ClipboardItemCtor = (window as any).ClipboardItem;
         if (navigator.clipboard && typeof (navigator.clipboard as any).write === 'function' && ClipboardItemCtor) {
           await (navigator.clipboard as any).write([
             new ClipboardItemCtor({
-              'text/html': htmlWithAbsoluteImageSrc,
+              'text/html': htmlForClipboard,
               'text/plain': plainText,
             }),
           ]);
         } else {
-          await navigator.clipboard.writeText(htmlWithAbsoluteImageSrc);
+          await navigator.clipboard.writeText(htmlForClipboard);
         }
         toast({
           title:
