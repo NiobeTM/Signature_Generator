@@ -16,27 +16,31 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="flex min-h-screen flex-col md:h-screen md:flex-row">
-        {/* Left Panel - Form */}
-        <div className="w-full border-b border-gray-200 overflow-y-auto p-6 md:w-1/2 md:border-b-0 md:border-r md:p-8">
-          <div className="max-w-md mx-auto">
-            <img
-              src="/elkak-logo-top.white.png"
-              alt="ELKAK"
-              className="mb-4"
-              style={{ height: '56px', width: 'auto', objectFit: 'contain' }}
-            />
-            <h1 className="text-3xl font-bold mb-2" style={{ color: '#0000FF' }}>Email Signature Generator</h1>
-            <SignatureForm formData={formData} setFormData={setFormData} />
-          </div>
-        </div>
+    <div className="min-h-screen bg-transparent">
+      <div className="min-h-screen p-6 md:p-10">
+        <div className="mx-auto w-full max-w-7xl rounded-2xl bg-titanium shadow-sm ring-1 ring-black/5">
+          <div className="grid min-h-screen grid-cols-1 gap-10 p-6 md:min-h-[calc(100vh-5rem)] md:grid-cols-2 md:p-8">
+            {/* Left Panel - Form */}
+            <div className="overflow-y-auto">
+              <div className="max-w-md mx-auto">
+                <img
+                  src="/elkak-logo-top.white.png"
+                  alt="ELKAK"
+                  className="mb-4"
+                  style={{ height: '56px', width: 'auto', objectFit: 'contain' }}
+                />
+                <h1 className="text-3xl font-bold mb-2" style={{ color: '#0000FF' }}>Email Signature Generator</h1>
+                <SignatureForm formData={formData} setFormData={setFormData} />
+              </div>
+            </div>
 
-        {/* Right Panel - Preview */}
-        <div className="w-full bg-gray-50 overflow-y-auto p-6 flex flex-col items-center justify-start md:w-1/2 md:p-8 md:justify-center">
-          <div className="w-full max-w-2xl">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Signature Preview</h2>
-            <SignaturePreview formData={formData} />
+            {/* Right Panel - Preview */}
+            <div className="overflow-y-auto flex flex-col items-center justify-start md:justify-center">
+              <div className="w-full max-w-2xl">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Signature Preview</h2>
+                <SignaturePreview formData={formData} />
+              </div>
+            </div>
           </div>
         </div>
       </div>

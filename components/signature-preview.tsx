@@ -343,27 +343,55 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
       </div>
 
       {/* Instructions */}
-      <div className="mt-6 p-4 rounded-lg border" style={{ backgroundColor: '#f0f0ff', borderColor: '#0000FF20' }}>
-        <p className="text-xs text-gray-700">
+      <div className="mt-6 p-4 rounded-lg border bg-deepcosmos" >
+        <p className="text-xs text-astral">
           {formData.language === 'en' ? (
             <>
-              <strong>For Outlook:</strong> Download as image, then go to File → Options → Mail → Signatures and insert the image. Or copy signature (HTML) for email signature editors.
+              <strong>For Outlook Mail:</strong> <br /> Download as image, then go to File → Options → Mail → Signatures and insert the image. Or copy signature (HTML) for email signature editors.
             </>
           ) : (
             <>
-              <strong>Για Outlook:</strong> Κατεβάστε ως εικόνα, μεταβείτε στο Αρχείο → Επιλογές → Αλληλογραφία → Υπογραφές και εισάγετε την εικόνα. Ή αντιγράψτε υπογραφή (HTML) για επεξεργαστές υπογραφής email.
+              <strong>Για Outlook Mail:</strong> <br /> Κατεβάστε ως εικόνα, μεταβείτε στο Αρχείο → Επιλογές → Αλληλογραφία → Υπογραφές και εισάγετε την εικόνα. Ή αντιγράψτε υπογραφή (HTML) για επεξεργαστές υπογραφής email.
             </>
           )}
         </p>
       </div>
 
-      <div style={{ fontSize: '10px', color: '#0000FF', lineHeight: '1.5' }}>
+      <div className="mt-6 p-4 rounded-lg border bg-deepcosmos" >
+        <p className="text-xs text-astral">
+          {formData.language === 'en' ? (
+            <>
+              <strong>For Android software:</strong> <br /> Download as image, then go to File → Options → Mail → Signatures and insert the image. Or copy signature (HTML) for email signature editors.
+            </>
+          ) : (
+            <>
+              <strong>Για Android λειτουργικό σύστημα:</strong> <br /> Κατεβάστε ως εικόνα, μεταβείτε στο Αρχείο → Επιλογές → Αλληλογραφία → Υπογραφές και εισάγετε την εικόνα. Ή αντιγράψτε υπογραφή (HTML) για επεξεργαστές υπογραφής email.
+            </>
+          )}
+        </p>
+      </div>
+
+      <div className="mt-6 p-4 rounded-lg border bg-deepcosmos" >
+        <p className="text-xs text-astral">
+          {formData.language === 'en' ? (
+            <>
+              <strong>For iOS software:</strong> <br /> Download as image, then go to File → Options → Mail → Signatures and insert the image. Or copy signature (HTML) for email signature editors.
+            </>
+          ) : (
+            <>
+              <strong>Για iOS λειτουργικό σύστημα:</strong> <br /> Κατεβάστε ως εικόνα, μεταβείτε στο Αρχείο → Επιλογές → Αλληλογραφία → Υπογραφές και εισάγετε την εικόνα. Ή αντιγράψτε υπογραφή (HTML) για επεξεργαστές υπογραφής email.
+            </>
+          )}
+        </p>
+      </div>
+
+      <div style={{ fontSize: '10px', color: '#FFFFFF', lineHeight: '1.5' }}>
         <div style={{ margin: '0px' }}>
           Copyright © 2026 IT Department for ΕΛΚΑΚ. All rights reserved. 
           <br /> 
           <br /> 
-          For support please contact:{' '}
-          <a href="mailto:it-support@elkak.gr" style={{ color: '#0000FF', textDecoration: 'none' }}>
+          For support please contact:{' '} +30 210 013 3070 or {' '}
+          <a href="mailto:it-support@elkak.gr" style={{ color: '#FFFFFF', textDecoration: 'none' }}>
             it-support@elkak.gr
           </a>
         </div>
