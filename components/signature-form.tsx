@@ -86,9 +86,9 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
     <form className="space-y-5">
       {/* Language Selection */}
       <fieldset>
-        <legend className="block text-sm font-semibold text-gray-900 mb-3">
+        {/* <legend className="block text-sm mb-3" style={{ color: '#FFFFFF' }}>
           {labels.language}
-        </legend>
+        </legend> */}
         <div className="flex flex-col gap-3 sm:flex-row">
         <button
             type="button"
@@ -120,13 +120,11 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
         </div>
       </fieldset>
 
-      {/* Required Fields Notice */}
-      <p className="text-xs text-gray-500">{labels.required}</p>
-      <p className="text-xs text-gray-600">{labels.privacy}</p>
+     
 
       {/* Full Name */}
       <div>
-        <label htmlFor="fullName" className="block text-sm font-semibold text-gray-900 mb-2">
+        <label htmlFor="fullName" className="block text-sm mb-2" style={{ color: '#FFFFFF' }}>
           {labels.fullName}
         </label>
         <input
@@ -145,7 +143,7 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
 
       {/* Position */}
       <div>
-        <label htmlFor="position" className="block text-sm font-semibold text-gray-900 mb-2">
+        <label htmlFor="position" className="block text-sm mb-2" style={{ color: '#FFFFFF' }}>
           {labels.position}
         </label>
         <input
@@ -164,7 +162,7 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
 
       {/* Email */}
       <div>
-        <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
+        <label htmlFor="email" className="block text-sm mb-2" style={{ color: '#FFFFFF' }}>
           {labels.email}
         </label>
         <input
@@ -210,7 +208,7 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
 
       {/* Phone */}
       <div>
-        <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 mb-2">
+        <label htmlFor="phone" className="block text-sm mb-2" style={{ color: '#FFFFFF' }}>
           {labels.phone}
         </label>
         <input
@@ -233,7 +231,7 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
 
       {/* Mobile Phone */}
       <div>
-        <label htmlFor="mobile" className="block text-sm font-semibold text-gray-900 mb-2">
+        <label htmlFor="mobile" className="block text-sm mb-2" style={{ color: '#FFFFFF' }}>
           {labels.mobile}
         </label>
         <input
@@ -255,7 +253,7 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
 
       {/* LinkedIn */}
       <div>
-        <label htmlFor="linkedin" className="block text-sm font-semibold text-gray-900 mb-2">
+        <label htmlFor="linkedin" className="block text-sm mb-2" style={{ color: '#FFFFFF' }}>
           {labels.linkedin}
         </label>
         <input
@@ -280,6 +278,11 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           {labels.clear}
         </button>
       </div>
+
+       {/* Required Fields Notice */}
+       <p className="text-xs text-white">{labels.required}</p>
+       <p className="text-xs text-white mt-2">{labels.privacy}</p>
+      
     </form>
   );
 }
