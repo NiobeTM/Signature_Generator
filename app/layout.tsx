@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/toaster'
+import { AuthGuard } from '@/components/auth-guard'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -41,8 +42,10 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
         <link rel="shortcut icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
       </head>
-      <body className="font-sans antialiased">
-        {children}
+      <body className="font-sans antialiased" style={{ backgroundImage: "url('/app-bg.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+        <AuthGuard>
+          {children}
+        </AuthGuard>
         <Toaster />
         {analyticsEnabled && <Analytics />}
       </body>

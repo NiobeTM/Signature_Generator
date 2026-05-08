@@ -134,10 +134,5 @@
     @apply bg-background text-foreground;
     min-height: 100%;
     overflow-x: hidden;
-    background-image: url('/app-bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
   }
 }

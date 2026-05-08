@@ -41,12 +41,12 @@ const companyData = {
   },
 };
 
-type ModalKey = 'outlook' | 'android' | 'ios' | null;
+type ModalKey = 'outlook' | 'owa' | 'android' | 'ios' | null;
 
 const instructions = {
   outlook: {
     icon: '/instruction-outlook.png',
-    label: { en: 'For Outlook Mail', el: 'Για Outlook Mail' },
+    label: { en: 'Outlook App', el: 'Outlook Εφαρμογή' },
     steps: {
       en: [
         'Click the "Copy Signature" button above.',
@@ -66,25 +66,53 @@ const instructions = {
       ],
     },
   },
+  owa: {
+    icon: '/instruction-outlook.png',
+    label: { en: 'Outlook Web (OWA)', el: 'Outlook Web (OWA)' },
+    steps: {
+      en: [
+        'Click the "Copy Signature" button above.',
+        'Go to outlook.office.com and sign in.',
+        'Click the Settings gear (⚙) in the top-right corner.',
+        'Search for "Email signature" or navigate to Mail → Compose and reply.',
+        'In the "Email signature" section, paste (Ctrl+V) your signature.',
+        'Check "Automatically include my signature on new messages I compose" and/or replies.',
+        'Click Save.',
+      ],
+      el: [
+        'Κάντε κλικ στο κουμπί "Αντιγραφή Υπογραφής" παραπάνω.',
+        'Μεταβείτε στο outlook.office.com και συνδεθείτε.',
+        'Κάντε κλικ στο γρανάζι Ρυθμίσεων (⚙) πάνω δεξιά.',
+        'Αναζητήστε "Υπογραφή email" ή πλοηγηθείτε στο Αλληλογραφία → Σύνταξη και απάντηση.',
+        'Στην ενότητα "Υπογραφή email", επικολλήστε (Ctrl+V) την υπογραφή σας.',
+        'Επιλέξτε "Αυτόματη συμπερίληψη υπογραφής σε νέα μηνύματα" ή/και απαντήσεις.',
+        'Κάντε κλικ στο Αποθήκευση.',
+      ],
+    },
+  },
   android: {
     icon: '/instruction-android.png',
     label: { en: 'For Android', el: 'Για Android' },
     steps: {
       en: [
         'Click the "Copy Signature" button above.',
-        'Open the Gmail app on your Android device.',
-        'Tap the Menu (☰) → Settings.',
+        'Open the Outlook app on your Android device.',
+        "Tap the user's icon.",
+        'Tap (⚙️) Settings.',
+        'Tap Signature.',
         'Select your email account.',
-        'Tap "Mobile Signature".',
-        'Paste the signature and tap OK to save.',
+        'Delete what is already written there.',
+        'Paste the signature and tap ✔ on the top right corner to save.',
       ],
       el: [
         'Κάντε κλικ στο κουμπί "Αντιγραφή Υπογραφής" παραπάνω.',
-        'Ανοίξτε την εφαρμογή Gmail στη συσκευή Android.',
-        'Πατήστε το Μενού (☰) → Ρυθμίσεις.',
+        'Ανοίξτε την εφαρμογή Outlook στη συσκευή Android σας.',
+        'Πατήστε το εικονίδιο χρήστη.',
+        'Πατήστε (⚙️) Ρυθμίσεις.',
+        'Πατήστε Υπογραφή.',
         'Επιλέξτε τον λογαριασμό email σας.',
-        'Πατήστε "Υπογραφή για κινητά".',
-        'Επικολλήστε την υπογραφή και πατήστε ΟΚ για αποθήκευση.',
+        'Διαγράψτε ό,τι είναι ήδη γραμμένο εκεί.',
+        'Επικολλήστε την υπογραφή και πατήστε ✔ στην πάνω δεξιά γωνία για αποθήκευση.',
       ],
     },
   },
@@ -94,19 +122,23 @@ const instructions = {
     steps: {
       en: [
         'Click the "Copy Signature" button above.',
-        'Open the Settings app on your iPhone or iPad.',
-        'Scroll down and tap Mail → Signature.',
-        'Select "All Accounts" or your specific account.',
-        'Clear the existing text and paste the signature.',
-        'Go back — changes are saved automatically.',
+        'Open the Outlook app on your iOS device.',
+        "Tap the user's icon.",
+        'Tap (⚙️) Settings.',
+        'Tap Signature.',
+        'Locate your email account.',
+        'Delete what is already written there.',
+        'Paste the signature and return to your mailbox, signature is automatically saved.',
       ],
       el: [
         'Κάντε κλικ στο κουμπί "Αντιγραφή Υπογραφής" παραπάνω.',
-        'Ανοίξτε τις Ρυθμίσεις στο iPhone ή iPad σας.',
-        'Κάντε κύλιση και πατήστε Mail → Υπογραφή.',
-        'Επιλέξτε "Όλοι οι λογαριασμοί" ή τον συγκεκριμένο λογαριασμό σας.',
-        'Διαγράψτε το υπάρχον κείμενο και επικολλήστε την υπογραφή.',
-        'Πηγαίνετε πίσω — οι αλλαγές αποθηκεύονται αυτόματα.',
+        'Ανοίξτε την εφαρμογή Outlook στη συσκευή iOS σας.',
+        'Πατήστε το εικονίδιο χρήστη.',
+        'Πατήστε (⚙️) Ρυθμίσεις.',
+        'Πατήστε Υπογραφή.',
+        'Επιλέξτε τον λογαριασμό email σας.',
+        'Διαγράψτε ό,τι είναι ήδη γραμμένο εκεί.',
+        'Επικολλήστε την υπογραφή και επιστρέψτε στo email σας, η υπογραφή αποθηκεύεται αυτόματα.',
       ],
     },
   },
@@ -247,7 +279,7 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
               </td>
             </tr>
             <tr>
-              <td style="padding: 12px 0 0 0; font-family: Arial, sans-serif; font-size: 8px; color: #555555; line-height: 1.4;">
+              <td style="padding: 12px 0 0 0; font-family: Arial, sans-serif; font-size: 8px; color: #555555; line-height: 1.4; text-align: justify;">
                 <font face="Arial" color="#555555">
                   ${formData.language === 'en'
                     ? '<strong>DISCLAIMER:</strong> This communication may contain confidential information and is intended exclusively for the recipient for whom it is intended, and only for that recipient. Any reproduction, review, distribution, copying, or other use or action of this communication as such or of its contents, in whole or in part, or of information derived from it, by anyone other than the intended recipient is strictly prohibited. If you have received this communication in error, please inform the sender immediately by replying to this e-mail and delete this communication from any computer or other device or storage location.'
@@ -407,7 +439,7 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
         </div>
 
         {/* Disclaimer */}
-        <div style={{ marginTop: '12px', fontSize: '8px', color: '#555555', lineHeight: '1.4' }}>
+        <div style={{ marginTop: '12px', fontSize: '8px', color: '#555555', lineHeight: '1.4', textAlign: 'justify' }}>
           {formData.language === 'en' ? (
             <span><strong>DISCLAIMER:</strong> This communication may contain confidential information and is intended exclusively for the recipient for whom it is intended, and only for that recipient. Any reproduction, review, distribution, copying, or other use or action of this communication as such or of its contents, in whole or in part, or of information derived from it, by anyone other than the intended recipient is strictly prohibited. If you have received this communication in error, please inform the sender immediately by replying to this e-mail and delete this communication from any computer or other device or storage location.</span>
           ) : (
@@ -417,12 +449,12 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
       </div>
 
       {/* Instructions */}
-      <div className="mt-12">
+      <div className="mt-4">
         <p className="mb-3 text-md" style={{ color: '#FFFFFF' }}>
           {formData.language === 'en' ? 'Instructions' : 'Οδηγίες'}
         </p>
-        <div className="flex gap-3">
-          {(['outlook', 'android', 'ios'] as const).map((key) => (
+        <div className="grid grid-cols-2 gap-3">
+          {(['outlook', 'owa', 'android', 'ios'] as const).map((key) => (
             <button
               key={key}
               onClick={() => setActiveModal(key)}
@@ -439,7 +471,7 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-12">
+      <div className="mt-4">
         <p className="mb-3 text-md" style={{ color: '#FFFFFF' }}>
           {formData.language === 'en' ? 'Get Your Signature' : 'Λήψη Υπογραφής'}
         </p>
