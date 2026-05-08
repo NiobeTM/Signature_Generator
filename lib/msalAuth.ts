@@ -4,8 +4,8 @@ import { getMsalConfig, loginRequest } from "./msalConfig";
 let msalInstance: PublicClientApplication | null = null;
 let msalInitialized: Promise<void> | null = null;
 
-export async function getMsalInstance(): Promise<PublicClientApplication | null> {
-  const msalConfig = getMsalConfig();
+export async function getMsalInstance(env?: { clientId?: string; tenantId?: string }): Promise<PublicClientApplication | null> {
+  const msalConfig = getMsalConfig(env);
 
   if (!msalConfig) {
     console.error(
@@ -44,9 +44,9 @@ export interface MicrosoftUserInfo {
   lastName?: string;
 }
 
-export async function loginWithMicrosoft(): Promise<MicrosoftUserInfo | null> {
+export async function loginWithMicrosoft(env?: { clientId?: string; tenantId?: string }): Promise<MicrosoftUserInfo | null> {
   try {
-    const msal = await getMsalInstance();
+    const msal = await getMsalInstance(env);
 
     if (!msal) {
       throw new Error("MSAL not configured. Please configure Azure AD credentials.");

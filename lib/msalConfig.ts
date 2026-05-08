@@ -1,8 +1,10 @@
 import { Configuration, PopupRequest } from "@azure/msal-browser";
 
-export function getMsalConfig(): Configuration | null {
-  const clientId = process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID;
-  const tenantId = process.env.NEXT_PUBLIC_AZURE_AD_TENANT_ID;
+type MsalEnv = { clientId?: string; tenantId?: string };
+
+export function getMsalConfig(env?: MsalEnv): Configuration | null {
+  const clientId = env?.clientId ?? process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID;
+  const tenantId = env?.tenantId ?? process.env.NEXT_PUBLIC_AZURE_AD_TENANT_ID;
 
   if (!clientId || !tenantId) {
     console.warn("Azure AD configuration missing. Microsoft login will not work.");
@@ -24,7 +26,7 @@ export function getMsalConfig(): Configuration | null {
       storeAuthStateInCookie: false,
     },
     system: {
-      allowNativeBroker: false,
+      // MSAL v4 BrowserSystemOptions does not support allowNativeBroker
     },
   };
 }

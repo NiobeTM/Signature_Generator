@@ -1,23 +1,8 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { LoginPage } from "@/components/login-page";
-import { sessionManager } from "@/lib/session";
+import { AuthClient } from "@/components/auth-client";
 
 export default function AuthPageRoute() {
-  const router = useRouter();
+  const clientId = process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID || "";
+  const tenantId = process.env.NEXT_PUBLIC_AZURE_AD_TENANT_ID || "";
 
-  // If already authenticated, skip login and go straight to the app
-  useEffect(() => {
-    if (sessionManager.isAuthenticated()) {
-      router.replace("/");
-    }
-  }, [router]);
-
-  const handleAuthenticated = () => {
-    router.replace("/");
-  };
-
-  return <LoginPage onAuthenticated={handleAuthenticated} />;
+  return <AuthClient msal={{ clientId, tenantId }} />;
 }

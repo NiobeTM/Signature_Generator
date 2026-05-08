@@ -7,20 +7,24 @@ import { sessionManager } from "@/lib/session";
 
 interface LoginPageProps {
   onAuthenticated: () => void;
+  msal?: {
+    clientId?: string;
+    tenantId?: string;
+  };
 }
 
-export function LoginPage({ onAuthenticated }: LoginPageProps) {
+export function LoginPage({ onAuthenticated, msal }: LoginPageProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const clientId = process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID || "";
-  const tenantId = process.env.NEXT_PUBLIC_AZURE_AD_TENANT_ID || "";
+  const clientId = msal?.clientId || process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID || "";
+  const tenantId = msal?.tenantId || process.env.NEXT_PUBLIC_AZURE_AD_TENANT_ID || "";
 
   const handleMicrosoftLogin = async () => {
     setIsLoading(true);
     setError("");
 
     try {
-      const user = await loginWithMicrosoft();
+      const user = await loginWithMicrosoft({ clientId, tenantId });
 
       if (!user || !user.email) {
         setError("Authentication returned no account. Please try again.");
