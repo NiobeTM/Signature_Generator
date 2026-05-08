@@ -12,6 +12,8 @@ interface LoginPageProps {
 export function LoginPage({ onAuthenticated }: LoginPageProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const clientId = process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID || "";
+  const tenantId = process.env.NEXT_PUBLIC_AZURE_AD_TENANT_ID || "";
 
   const handleMicrosoftLogin = async () => {
     setIsLoading(true);
@@ -117,9 +119,15 @@ export function LoginPage({ onAuthenticated }: LoginPageProps) {
         </div>
 
         {/* Footer note */}
-        <p className="text-white/40 text-xs text-center">
-          Access restricted to @elkak.gr accounts only.
-        </p>
+        <div className="text-center space-y-1">
+          <p className="text-white/40 text-xs">
+            Access restricted to @elkak.gr accounts only.
+          </p>
+          <p className="text-white/35 text-[10px]">
+            Azure config: clientId {clientId ? `…${clientId.slice(-6)}` : "MISSING"} · tenantId{" "}
+            {tenantId ? `…${tenantId.slice(-6)}` : "MISSING"}
+          </p>
+        </div>
       </div>
     </div>
   );
