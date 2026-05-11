@@ -6,7 +6,7 @@ import { isMsalCryptoContextReady, loginWithMicrosoftOrRedirect } from "@/lib/ms
 import { sessionManager } from "@/lib/session";
 
 interface LoginPageProps {
-  onAuthenticated: () => void;
+  onAuthenticated: () => void | Promise<void>;
   msal?: {
     clientId?: string;
     tenantId?: string;
@@ -62,24 +62,7 @@ export function LoginPage({ onAuthenticated, msal }: LoginPageProps) {
         user.displayName || user.email,
         user.msalHomeAccountId
       );
-      // Ensure the background image is in cache before navigating so there is no black flash.
-      await new Promise<void>((resolve) => {
-        const img = new window.Image();
-        img.onload = async () => {
-          try {
-            // decode() ensures the image is ready to paint (helps incognito/private modes).
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const dec = (img as any).decode?.bind(img);
-            if (dec) await dec();
-          } catch {
-            // ignore
-          }
-          resolve();
-        };
-        img.onerror = () => resolve();
-        img.src = "/app-bg.png";
-      });
-      onAuthenticated();
+      await onAuthenticated();
     } catch (err: unknown) {
       const msalError = err as { errorCode?: string; message?: string };
       if (msalError?.errorCode === "user_cancelled") {

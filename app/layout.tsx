@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthGuard } from '@/components/auth-guard'
+import { APP_BG_SRC } from '@/lib/preloadAppBackground'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -44,28 +45,20 @@ export default function RootLayout({
         {/* fetchpriority="high" tells the browser to start fetching the background
             image before CSS is even parsed — reduces first-load flash. */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link rel="preload" as="image" href="/app-bg.png" fetchPriority="high" />
+        <link rel="preload" as="image" href={APP_BG_SRC} fetchPriority="high" />
       </head>
       <body className="font-sans antialiased relative">
-        {/* Force-fetch + decode the background image even in strict/no-disk-cache modes (e.g. incognito).
-            Using a real <img> avoids relying on CSS background fetch timing. */}
-        <img
-          src="/app-bg.png"
-          alt=""
-          aria-hidden="true"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-          style={{
-            position: "fixed",
-            width: 1,
-            height: 1,
-            left: -9999,
-            top: -9999,
-            opacity: 0,
-            pointerEvents: "none",
-          }}
-        />
+        {/* Full-viewport image layer (not CSS on html) paints reliably after client navigations. */}
+        <div className="pointer-events-none fixed inset-0 z-0" aria-hidden>
+          <img
+            src={APP_BG_SRC}
+            alt=""
+            className="block h-full w-full object-cover"
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
+          />
+        </div>
         <div className="relative z-10">
           <AuthGuard>
             {children}
