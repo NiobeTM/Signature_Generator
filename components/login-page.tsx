@@ -53,7 +53,6 @@ export function LoginPage({ onAuthenticated, msal }: LoginPageProps) {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-4"
-      style={{ backgroundImage: "url('/app-bg.png')", backgroundSize: "cover" }}
     >
       <div
         className="w-full max-w-md rounded-2xl shadow-2xl ring-1 ring-black/10 p-10 flex flex-col items-center gap-8"

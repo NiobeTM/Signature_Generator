@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthGuard } from '@/components/auth-guard'
+import { BackgroundLayer } from '@/components/background-layer'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -41,11 +42,15 @@ export default function RootLayout({
         {/* Fallback PNG favicon (in case the browser prefers PNG for some reason). */}
         <link rel="icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
         <link rel="shortcut icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
+        <link rel="preload" as="image" href="/app-bg.png" />
       </head>
-      <body className="font-sans antialiased" style={{ backgroundImage: "url('/app-bg.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
-        <AuthGuard>
-          {children}
-        </AuthGuard>
+      <body className="font-sans antialiased relative" style={{ backgroundColor: '#0b0b0b' }}>
+        <BackgroundLayer />
+        <div className="relative z-10">
+          <AuthGuard>
+            {children}
+          </AuthGuard>
+        </div>
         <Toaster />
         {analyticsEnabled && <Analytics />}
       </body>
