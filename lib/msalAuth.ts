@@ -75,6 +75,7 @@ export interface MicrosoftUserInfo {
   displayName?: string;
   firstName?: string;
   lastName?: string;
+  msalHomeAccountId?: string;
 }
 
 function getMsalErrorCode(err: unknown): string {
@@ -188,6 +189,7 @@ function getUserInfoFromAccount(account: AccountInfo): MicrosoftUserInfo {
     displayName: account.name || "",
     firstName: nameParts[0] || "",
     lastName: nameParts.slice(1).join(" ") || "",
+    msalHomeAccountId: account.homeAccountId,
   };
 }
 
@@ -203,4 +205,29 @@ export async function logoutMicrosoft(): Promise<void> {
   } catch (error) {
     console.error("Microsoft logout error:", error);
   }
+}
+
+/** Prefer full-page logout (more reliable than popups on some browsers/settings). */
+export async function logoutMicrosoftRedirect(): Promise<void> {
+  const { sessionManager } = await import("./session");
+  const msal = await getMsalInstance();
+  if (!msal) return;
+
+  const accounts = msal.getAllAccounts();
+  const session = sessionManager.getSession();
+  const account =
+    (session?.msalHomeAccountId
+      ? accounts.find((a) => a.homeAccountId === session.msalHomeAccountId)
+      : undefined) ?? accounts[0];
+
+  // If we can target a specific account + provide hint, Microsoft is less likely to show a picker.
+  const logoutHint = account?.username;
+  const postLogoutRedirectUri =
+    typeof window !== "undefined" ? `${window.location.origin}/auth` : undefined;
+
+  await msal.logoutRedirect({
+    account,
+    logoutHint,
+    postLogoutRedirectUri,
+  });
 }

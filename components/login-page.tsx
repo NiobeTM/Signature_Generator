@@ -57,7 +57,11 @@ export function LoginPage({ onAuthenticated, msal }: LoginPageProps) {
         return;
       }
 
-      sessionManager.createSession(user.email, user.displayName || user.email);
+      sessionManager.createSession(
+        user.email,
+        user.displayName || user.email,
+        user.msalHomeAccountId
+      );
       // Ensure the background image is in cache before navigating so there is no black flash.
       await new Promise<void>((resolve) => {
         const img = new window.Image();

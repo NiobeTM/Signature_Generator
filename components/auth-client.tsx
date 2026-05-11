@@ -45,7 +45,11 @@ export function AuthClient(props: { msal: { clientId: string; tenantId: string }
             setRedirectChecked(true);
             return;
           }
-          sessionManager.createSession(user.email, user.displayName || user.email);
+          sessionManager.createSession(
+            user.email,
+            user.displayName || user.email,
+            user.msalHomeAccountId
+          );
           await preloadImage("/app-bg.png");
           if (cancelled) return;
           router.replace("/");

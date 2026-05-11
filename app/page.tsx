@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import SignatureForm from '@/components/signature-form';
 import SignaturePreview from '@/components/signature-preview';
+import { UserMenu } from '@/components/user-menu';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -23,15 +24,18 @@ export default function Home() {
           style={{ backgroundColor: '#84868C' }}
         >
           {/* ── Header (full width) ── */}
-          <div className="flex gap-6 px-8 pt-8 pb-6">
-            <img
-              src="/elkak-logo-header.png"
-              alt="ELKAK"
-              style={{ height: '56px', width: 'auto', objectFit: 'contain', mixBlendMode: 'screen' }}
-            />
-            <h1 className="text-3xl font-bold mt-3" style={{ color: '#FFFFFF' }}>
-              Email Signature Generator
-            </h1>
+          <div className="flex items-start justify-between gap-6 px-8 pt-8 pb-6">
+            <div className="flex gap-6">
+              <img
+                src="/elkak-logo-header.png"
+                alt="ELKAK"
+                style={{ height: '56px', width: 'auto', objectFit: 'contain', mixBlendMode: 'screen' }}
+              />
+              <h1 className="text-3xl font-bold mt-3" style={{ color: '#FFFFFF' }}>
+                Email Signature Generator
+              </h1>
+            </div>
+            <UserMenu />
           </div>
 
           <div className="mx-8 border-t border-white" />

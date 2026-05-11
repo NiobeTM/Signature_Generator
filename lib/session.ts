@@ -2,6 +2,8 @@ export interface SessionData {
   isAuthenticated: boolean;
   email: string;
   displayName: string;
+  /** Used to target the exact MSAL account on logout (avoid account picker). */
+  msalHomeAccountId?: string;
   timestamp: number;
 }
 
@@ -9,11 +11,12 @@ const SESSION_KEY = "elkak_sig_session";
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
 
 export const sessionManager = {
-  createSession: (email: string, displayName: string): void => {
+  createSession: (email: string, displayName: string, msalHomeAccountId?: string): void => {
     const data: SessionData = {
       isAuthenticated: true,
       email,
       displayName,
+      msalHomeAccountId,
       timestamp: Date.now(),
     };
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
