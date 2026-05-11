@@ -11,15 +11,18 @@ export function getMsalConfig(env?: MsalEnv): Configuration | null {
     return null;
   }
 
+  // SPA redirect must match Entra exactly — use /auth so redirect return + handleRedirectPromise() stay on one route.
   const redirectUri =
-    typeof window !== "undefined" ? window.location.origin : "http://localhost:3018";
+    typeof window !== "undefined"
+      ? `${window.location.origin}/auth`
+      : "http://localhost:3018/auth";
 
   return {
     auth: {
       clientId,
       authority: `https://login.microsoftonline.com/${tenantId}`,
       redirectUri,
-      postLogoutRedirectUri: redirectUri,
+      postLogoutRedirectUri: typeof window !== "undefined" ? window.location.origin : "http://localhost:3018",
     },
     cache: {
       cacheLocation: "sessionStorage",

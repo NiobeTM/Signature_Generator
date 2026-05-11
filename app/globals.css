@@ -126,15 +126,35 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* App background on <html> (not a fixed React layer) so iOS/WebKit still paints it
+     after client-side navigations; same image site-wide as /public/app-bg.png */
+  html {
+    min-height: 100%;
+    background-color: #0b0b0b;
+    background-image: url('/app-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* avoid fixed — known iOS issues */
+    background-attachment: scroll;
+    /* Fade in on initial page load so even a brief gap between paint and image
+       decode is a smooth transition rather than a hard black flash. */
+    animation: bg-fade-in 0.4s ease-in both;
+  }
+
+  @keyframes bg-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
   html,
   body {
     height: 100%;
   }
   body {
-    /* Keep text color but allow the background image layer to show through */
     @apply text-foreground;
     min-height: 100%;
     overflow-x: hidden;
+    /* Let the <html> background show in the margins around content */
     background-color: transparent;
   }
 }

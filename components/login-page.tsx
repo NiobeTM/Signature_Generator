@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { loginWithMicrosoft } from "@/lib/msalAuth";
+import { isMsalCryptoContextReady, loginWithMicrosoftOrRedirect } from "@/lib/msalAuth";
 import { sessionManager } from "@/lib/session";
 
 interface LoginPageProps {
@@ -19,12 +19,33 @@ export function LoginPage({ onAuthenticated, msal }: LoginPageProps) {
   const clientId = msal?.clientId || process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID || "";
   const tenantId = msal?.tenantId || process.env.NEXT_PUBLIC_AZURE_AD_TENANT_ID || "";
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    if (p.get("error") === "non_elkak") {
+      setError("Access denied. Only @elkak.gr Microsoft accounts are allowed.");
+      window.history.replaceState({}, "", "/auth");
+      return;
+    }
+    if (clientId && tenantId && !isMsalCryptoContextReady()) {
+      setError(
+        "Microsoft sign-in requires a secure browser page (https://, or http://localhost for local dev). Plain http:// with a computer name or LAN address cannot use Web Crypto."
+      );
+    }
+  }, [clientId, tenantId]);
+
   const handleMicrosoftLogin = async () => {
     setIsLoading(true);
     setError("");
 
     try {
-      const user = await loginWithMicrosoft({ clientId, tenantId });
+      const result = await loginWithMicrosoftOrRedirect({ clientId, tenantId });
+
+      if (result === "redirect") {
+        return;
+      }
+
+      const user = result;
 
       if (!user || !user.email) {
         setError("Authentication returned no account. Please try again.");
@@ -37,11 +58,32 @@ export function LoginPage({ onAuthenticated, msal }: LoginPageProps) {
       }
 
       sessionManager.createSession(user.email, user.displayName || user.email);
+      // Ensure the background image is in cache before navigating so there is no black flash.
+      await new Promise<void>((resolve) => {
+        const img = new window.Image();
+        img.onload = async () => {
+          try {
+            // decode() ensures the image is ready to paint (helps incognito/private modes).
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const dec = (img as any).decode?.bind(img);
+            if (dec) await dec();
+          } catch {
+            // ignore
+          }
+          resolve();
+        };
+        img.onerror = () => resolve();
+        img.src = "/app-bg.png";
+      });
       onAuthenticated();
     } catch (err: unknown) {
       const msalError = err as { errorCode?: string; message?: string };
       if (msalError?.errorCode === "user_cancelled") {
         setError("Sign-in was cancelled. Please try again.");
+      } else if (msalError?.errorCode === "crypto_nonexistent") {
+        setError(
+          "This page is not a secure context, so the browser cannot run Microsoft sign-in. Open the app with https:// or use http://localhost for development."
+        );
       } else {
         setError(`Sign-in error: ${msalError?.errorCode || msalError?.message || String(err)}`);
       }
@@ -122,15 +164,9 @@ export function LoginPage({ onAuthenticated, msal }: LoginPageProps) {
         </div>
 
         {/* Footer note */}
-        <div className="text-center space-y-1">
-          <p className="text-white/40 text-xs">
-            Access restricted to @elkak.gr accounts only.
-          </p>
-          <p className="text-white/35 text-[10px]">
-            Azure config: clientId {clientId ? `…${clientId.slice(-6)}` : "MISSING"} · tenantId{" "}
-            {tenantId ? `…${tenantId.slice(-6)}` : "MISSING"}
-          </p>
-        </div>
+        <p className="text-white/40 text-xs text-center">
+          Access restricted to @elkak.gr accounts only.
+        </p>
       </div>
     </div>
   );

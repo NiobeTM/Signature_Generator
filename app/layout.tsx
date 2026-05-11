@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthGuard } from '@/components/auth-guard'
-import { BackgroundLayer } from '@/components/background-layer'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -42,10 +41,31 @@ export default function RootLayout({
         {/* Fallback PNG favicon (in case the browser prefers PNG for some reason). */}
         <link rel="icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
         <link rel="shortcut icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
-        <link rel="preload" as="image" href="/app-bg.png" />
+        {/* fetchpriority="high" tells the browser to start fetching the background
+            image before CSS is even parsed — reduces first-load flash. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link rel="preload" as="image" href="/app-bg.png" fetchPriority="high" />
       </head>
-      <body className="font-sans antialiased relative" style={{ backgroundColor: '#0b0b0b' }}>
-        <BackgroundLayer />
+      <body className="font-sans antialiased relative">
+        {/* Force-fetch + decode the background image even in strict/no-disk-cache modes (e.g. incognito).
+            Using a real <img> avoids relying on CSS background fetch timing. */}
+        <img
+          src="/app-bg.png"
+          alt=""
+          aria-hidden="true"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          style={{
+            position: "fixed",
+            width: 1,
+            height: 1,
+            left: -9999,
+            top: -9999,
+            opacity: 0,
+            pointerEvents: "none",
+          }}
+        />
         <div className="relative z-10">
           <AuthGuard>
             {children}
