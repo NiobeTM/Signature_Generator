@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     // The previous '/icon.svg' was overriding the tab icon.
     icon: [
       {
-        url: '/favicon.ico?v=2',
+        url: '/favicon.ico?v=5',
         type: 'image/x-icon',
       },
     ],
@@ -37,11 +37,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Extra explicit favicon tags for reliability (browser caching/refresh quirks). */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=5" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5" />
         {/* Fallback PNG favicon (in case the browser prefers PNG for some reason). */}
-        <link rel="icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
-        <link rel="shortcut icon" type="image/png" href="/elkak-tab-icon-v2.png?v=2" />
+        <link rel="icon" type="image/png" href="/elkak-tab-icon-v2.png?v=5" />
+        <link rel="shortcut icon" type="image/png" href="/elkak-tab-icon-v2.png?v=5" />
         {/* fetchpriority="high" tells the browser to start fetching the background
             image before CSS is even parsed — reduces first-load flash. */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
