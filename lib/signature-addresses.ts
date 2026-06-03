@@ -9,8 +9,8 @@ export const SIGNATURE_ADDRESSES: Record<
     el: 'ΛΕΩΦ. ΑΝΔΡΕΑ ΣΥΓΓΡΟΥ 350, 176 74,ΚΑΛΛΙΘΕΑ',
   },
   fakinou: {
-    en: 'P. KANELLOPOULOU AVE. 6, FAKINOU CAMP, ATHENS 115 27',
-    el: 'ΛΕΩΦ. Π. ΚΑΝΕΛΛΟΠΟΥΛΟΥ 6, ΣΤΡ/ΔΟ ΦΑΚΙΝΟΥ, ΑΘΗΝΑ 115 27',
+    en: 'P. KANELLOPOULOU AVE. 6, FAKINOU CAMP, 115 27, ATHENS',
+    el: 'ΛΕΩΦ. Π. ΚΑΝΕΛΛΟΠΟΥΛΟΥ 6, ΣΤΡ/ΔΟ ΦΑΚΙΝΟΥ, 115 27, ΑΘΗΝΑ',
   },
 };
 
