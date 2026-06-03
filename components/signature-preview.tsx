@@ -4,6 +4,10 @@ import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
+import {
+  type AddressKey,
+  getSignatureAddress,
+} from '@/lib/signature-addresses';
 
 interface FormData {
   language: 'en' | 'el';
@@ -12,6 +16,7 @@ interface FormData {
   email: string;
   phone: string;
   mobile: string;
+  addressKey: AddressKey;
   linkedin: string;
 }
 
@@ -30,16 +35,7 @@ const logos = {
   },
 };
 
-const companyData = {
-  en: {
-    address: 'ANDREA SYNGROU AVENUE 350, 176 74, KALLITHEA',
-    website: 'ELKAK.GR',
-  },
-  el: {
-    address: 'ΛΕΩΦ. ΑΝΔΡΕΑ ΣΥΓΓΡΟΥ 350, 176 74,ΚΑΛΛΙΘΕΑ',
-    website: 'ELKAK.GR',
-  },
-};
+const WEBSITE = 'ELKAK.GR';
 
 type ModalKey = 'outlook' | 'owa' | 'android' | 'ios' | null;
 
@@ -147,7 +143,7 @@ const instructions = {
 export default function SignaturePreview({ formData }: SignaturePreviewProps) {
   const signatureRef = useRef<HTMLDivElement>(null);
   const [activeModal, setActiveModal] = useState<ModalKey>(null);
-  const company = companyData[formData.language];
+  const address = getSignatureAddress(formData.language, formData.addressKey);
   const isElkakEmail = (value: string) => /^[A-Z0-9._%+-]+@ELKAK\.GR$/i.test(value.trim());
 
   const handleDownload = async () => {
@@ -261,14 +257,14 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
             </tr>
             <tr>
               <td style="padding:0; margin:0; font-size:11px; line-height:1.15; color:${blue};">
-                <font face="Arial" color="${blue}">${safe(company.address)}</font>
+                <font face="Arial" color="${blue}">${safe(address)}</font>
               </td>
             </tr>
             <tr>
               <td style="padding:0; margin:0; font-size:11px; line-height:1.15; color:${blue};">
                 <font face="Arial" color="${blue}">
-                  <a href="https://${safe(company.website)}" style="color:${blue}; text-decoration:none;" target="_blank" rel="noopener noreferrer">
-                    ${safe(company.website)}
+                  <a href="https://${safe(WEBSITE)}" style="color:${blue}; text-decoration:none;" target="_blank" rel="noopener noreferrer">
+                    ${safe(WEBSITE)}
                   </a>
                 </font>
               </td>
@@ -421,10 +417,10 @@ export default function SignaturePreview({ formData }: SignaturePreviewProps) {
 
         {/* Address & Website */}
         <div style={{ fontSize: '11px', color: '#0000FF', lineHeight: '1.5' }}>
-          <div style={{ margin: '0px' }}>{company.address}</div>
+          <div style={{ margin: '0px' }}>{address}</div>
           <div style={{ margin: '0px' }}>
-            <a href={`https://${company.website}`} style={{ color: '#0000FF', textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
-              {company.website}
+            <a href={`https://${WEBSITE}`} style={{ color: '#0000FF', textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
+              {WEBSITE}
             </a>
           </div>
         </div>

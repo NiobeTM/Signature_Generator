@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import {
+  type AddressKey,
+  ADDRESS_OPTIONS,
+} from '@/lib/signature-addresses';
 
 interface FormData {
   language: 'en' | 'el';
@@ -9,6 +13,7 @@ interface FormData {
   email: string;
   phone: string;
   mobile: string;
+  addressKey: AddressKey;
   linkedin: string;
 }
 
@@ -25,6 +30,7 @@ const languageLabels = {
     email: 'Email Address *',
     phone: 'Telephone *',
     mobile: 'Mobile Phone',
+    address: 'Address *',
     linkedin: 'LinkedIn Profile URL',
     english: 'English',
     greek: 'Greek',
@@ -39,6 +45,7 @@ const languageLabels = {
     email: 'Διεύθυνση Email *',
     phone: 'Τηλέφωνο *',
     mobile: 'Κινητό Τηλέφωνο',
+    address: 'Διεύθυνση *',
     linkedin: 'LinkedIn Profile URL',
     english: 'Αγγλικά',
     greek: 'Ελληνικά',
@@ -78,6 +85,7 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
       email: '',
       phone: '',
       mobile: '',
+      addressKey: 'syngrou',
       linkedin: '',
     });
   };
@@ -249,6 +257,28 @@ export default function SignatureForm({ formData, setFormData }: SignatureFormPr
           title={formData.language === 'en' ? 'Mobile must be exactly 10 digits.' : 'Το κινητό πρέπει να είναι ακριβώς 10 ψηφία.'}
           autoComplete="tel-national"
         />
+      </div>
+
+      {/* Address */}
+      <div>
+        <label htmlFor="addressKey" className="block text-sm mb-2" style={{ color: '#FFFFFF' }}>
+          {labels.address}
+        </label>
+        <select
+          id="addressKey"
+          name="addressKey"
+          value={formData.addressKey}
+          onChange={(e) => handleInputChange('addressKey', e.target.value as AddressKey)}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white text-gray-900"
+          style={{ '--tw-ring-color': '#0000FF' } as React.CSSProperties}
+          required
+        >
+          {(Object.keys(ADDRESS_OPTIONS) as AddressKey[]).map((key) => (
+            <option key={key} value={key}>
+              {ADDRESS_OPTIONS[key][formData.language]}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* LinkedIn */}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SignatureForm from '@/components/signature-form';
 import SignaturePreview from '@/components/signature-preview';
 import { UserMenu } from '@/components/user-menu';
+import type { AddressKey } from '@/lib/signature-addresses';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function Home() {
     email: '',
     phone: '',
     mobile: '',
+    addressKey: 'syngrou' as AddressKey,
     linkedin: '',
   });
 
